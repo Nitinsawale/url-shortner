@@ -15,3 +15,7 @@ class Urls(Document):
 
 
 counter = CounterService()
+base62Converter = Base62Helper()
+
+
+app = FastAPI()
