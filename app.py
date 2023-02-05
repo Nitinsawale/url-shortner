@@ -14,3 +14,4 @@ class Urls(Document):
     timeStamp = DateTimeField(default = datetime.now())
 
 
+counter = CounterService()
