@@ -1,0 +1,90 @@
+<div class="row">
+  <ul class="nav nav-tabs" id="myTabs" role="tablist">
+    <li class="nav-item">
+      <button class="nav-link active" id="url-creation-tab" data-bs-toggle="tab" data-bs-target="#url-creation-pane"
+        role="tab" area-controls="url-creation-pane" aria-selected="true">
+        URL
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" id="qr-creation-tab" data-bs-toggle="tab" data-bs-target="#qr-creation-pane" role="tab"
+        area-controls="qr-creation-pane" aria-selected="false">
+        QR
+      </button>
+    </li>
+
+  </ul>
+</div>
+
+<div class="tab-content">
+  <div class="tab-pane fade show active" id="url-creation-pane" role="tabpanel" aria-labelledby="url-creation-tab"
+    tabindex="0">
+
+    <form [formGroup]="urlCreationForm">
+      <div class="row py-2">
+        <div class="col-12">
+          <label for="linkField" class="form-label">Long URL</label>
+          <input
+            [ngClass]="{'input-error':(urlCreationForm.get('long_url')?.touched && urlCreationForm.controls['long_url'].hasError('required'))}"
+            id="linkField" formControlName="long_url" class="form-control form-control-lg" type="text"
+            placeholder="Long url" aria-label="long url field">
+          <span
+            *ngIf="(urlCreationForm.get('long_url')?.touched && urlCreationForm.controls['long_url'].hasError('required'))">required</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 col-12">
+          <label for="domainField" class="form-label">Domain</label>
+          <input id="domainField" formControlName="domain" class="form-control form-control-lg" type="text"
+            placeholder="domain" aria-label="domain field" [disabled]="true">
+          <span
+            *ngIf="urlCreationForm.get('domain')?.touched && urlCreationForm.controls['domain'].hasError('required')">required</span>
+        </div>
+        <div class="col-md-6 col-12">
+          <label for="backHalfField" class="form-label">Back Half(option)</label>
+          <input id="backHalfField" formControlName="back_half" class="form-control form-control-lg" type="text"
+            placeholder="back half" aria-label="back half field">
+        </div>
+      </div>
+
+      <div *ngIf="is_resp" class="mt-4">
+        <div class="alert alert-success">
+          <h1 class="alert-heading">Your URL is ready!</h1>
+          <hr>
+          <div class="row">
+            <div class="col-md-8">
+              {{new_url}} <button class="btn btn-outline-info" [cdkCopyToClipboard]="new_url"><i class="bi bi-clipboard"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row py-4">
+        <div class="col-12 d-flex justify-content-center">
+          <button class="btn btn-lg btn-primary" (click)="generateShortUrl()">Submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <hr>
+  <div class="row justify-content-center">
+    <div class="col-md-4 d-flex flex-column">
+      Total URLs
+      <div class="number">
+        {{totalURLs}}
+      </div>
+    </div>
+    <div class="col-md-4 d-flex flex-column">
+      Highest hits
+      <div class="number">
+        {{maxHits}}
+      </div>
+    </div>
+
+  </div>
+
+  <div class="tab-pane fade" id="qr-creation-pane" role="tabpanel" aria-labelledby="qr-creation-tab" tabindex="0">
+    asdfasdfasdfasfdafsdfsdfasdf453454
+  </div>
+</div>
