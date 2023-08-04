@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~bootstrap-icons/font/bootstrap-icons.css";
 body{
-  background-color: rgb(240, 240, 240);
+  background-color:#F6F5F5;
 }
 
 
@@ -16,5 +16,32 @@ body{
   border: 1px solid green;
 }
 
+.form-label
+{
+  font-size: 15px;
+  font-weight: 500;
+  font-family: 'Roboto';
+}
+
+.form-field-error
+{
+  color: red;
+  padding: 5px;
+  font-weight: 500;
+}
+
+.btn
+{
+    background: #048998;
+    border: 2px solid #048998;
+    color: white;
+}
+
+.toolbar
+{
+  background-color: #3BB4C1 !important;
+}
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+

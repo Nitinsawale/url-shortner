@@ -9,9 +9,13 @@ import uuid
 import json
 from bson.json_util import dumps,loads
 import qrcode
+import io
 import os
+import base64
 
-QR_IMAGE_PATH = ""
+QR_IMAGE_PATH = "./QR_IMAGES/" 
+if not os.path.exists(QR_IMAGE_PATH):
+    os.mkdir(QR_IMAGE_PATH)
 
 connect("url_shortner")
 class Urls(Document):
@@ -25,6 +29,11 @@ class UrlAnalysis(Document):
     id = StringField(primary_key = True)
     url_hash = StringField(required = True)
     hits = IntField(default = 0)
+
+class UrlQrCode(Document):
+    id = StringField(primary_key = True, default = lambda: str(uuid.uuid4().hex))
+    url_hash = StringField(required = True)
+    image = StringField(required = True)
 
 counter = CounterService()
 base62Converter = Base62Helper()
@@ -45,7 +54,12 @@ app.add_middleware(
 
 def generate_qr_image(url):
     img = qrcode.make(url)
-    img.save("test.png")
+    buffer = io.BytesIO()
+    img.save(buffer, "PNG")
+    image_in_str = base64.b64encode(buffer.getvalue()).decode("ascii")   
+    return str(image_in_str)
+    
+
 
 @app.post("/short-url")
 async def short_url(request:Request):
@@ -63,7 +77,10 @@ async def short_url(request:Request):
     obj = {"id":url_id, "url_hash":url_hash, "url":url}
     new_id = Urls(**obj).save().id
     UrlAnalysis(**{"url_hash":url_hash,"id":str(uuid.uuid4().hex)}).save()
-    return JSONResponse({"short url":f'http://localhost:8001/{url_hash}'})
+    url = f'http://localhost:8001/{url_hash}'
+    image_in_str = generate_qr_image(url)
+    UrlQrCode(**{"url_hash":url_hash, "image":image_in_str}).save()
+    return JSONResponse({"short url":f'http://localhost:8001/{url_hash}', 'qr_image':image_in_str})
 
 
 
@@ -80,3 +97,14 @@ def update_hits(url_hash):
         UrlAnalysis.objects(url_hash = url_hash).update(inc__hits = 1)
     except:
         raise HTTPException(status_code = 400, detail="invalid url")
+    
+
+@app.get("/search-qr/{url_hash}")
+async def update_hits(url_hash):
+    qr_object = UrlQrCode.objects(url_hash =url_hash) 
+    print(qr_object)
+    if not qr_object:
+        raise HTTPException(status_code = 400, detail="Invalid Url")
+    
+    image = qr_object[0].image
+    return JSONResponse({"qr_image":image})
